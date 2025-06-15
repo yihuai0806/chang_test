@@ -1,0 +1,215 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "\u4e2d\u83ef\u6c11\u570b\u8fb2\u6703", "label": "\u4e2d\u83ef\u6c11\u570b\u8fb2\u6703", "shape": "dot", "size": 10, "title": "\u4e2d\u83ef\u6c11\u570b\u8fb2\u6703\nnodeid: 12424.0\nufwork: 1.0\ntype: \u5ba3\u50b3\ncountry: 1.0\nperson: 0.0\ngovernment: 0.0\ndead: 0.0\ncompanyid: 57206805.0\naddress: \u81fa\u4e2d\u5e02\u5927\u91cc\u5340\u4e2d\u8208\u8def2\u6bb5522\u865f\nename: National Farmers\u0027 Association, R.O.C."}, {"color": "#97c2fc", "id": "\u5f35\u6c38\u6210", "label": "\u5f35\u6c38\u6210", "shape": "dot", "size": 10, "title": "\u5f35\u6c38\u6210\nnodeid: 12422.0\nufwork: 1.0\nrank: \u4e2d\u83ef\u6c11\u570b\u8fb2\u6703\u7e3d\u5e79\u4e8b\ntype: \u5916\u4ea4\ncountry: 1.0\nperson: 1.0\npolitician: 1.0\nparty: \u4e2d\u570b\u570b\u6c11\u9ee8\ngovernment: 1.0\ndead: 0.0\nename: Chang Yung-Cheng"}, {"color": "#97c2fc", "id": "\u5f35\u5609\u90e1", "label": "\u5f35\u5609\u90e1", "shape": "dot", "size": 10, "title": "\u5f35\u5609\u90e1\nnodeid: 12431.0\nufwork: 1.0\nrank: \u7acb\u6cd5\u59d4\u54e1\ntype: \u5ba3\u50b3\ncountry: 1.0\nperson: 1.0\ngovernment: 0.0\ndead: 0.0\nename: Chang Chia-Chun"}, {"color": "#97c2fc", "id": "\u6843\u8fb2\u7d9c\u5408\u8fb2\u7522\u54c1\u6279\u767c\u5e02\u5834\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "\u6843\u8fb2\u7d9c\u5408\u8fb2\u7522\u54c1\u6279\u767c\u5e02\u5834\u80a1\u4efd\u6709\u9650\u516c\u53f8", "shape": "dot", "size": 10, "title": "\u6843\u8fb2\u7d9c\u5408\u8fb2\u7522\u54c1\u6279\u767c\u5e02\u5834\u80a1\u4efd\u6709\u9650\u516c\u53f8\nnodeid: 766.0\nlevel: 4012.0\nufwork: 0.0\ncountry: 1.0\nperson: 0.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\ncompanyid: 89511883.0\naddress: \u6843\u5712\u5e02\u8606\u7af9\u5340\u4e2d\u798f\u91cc\u6587\u4e2d\u8def\u4e00\u6bb5107\u865f"}, {"color": "#97c2fc", "id": "\u81fa\u5317\u8fb2\u7522\u904b\u92b7\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "\u81fa\u5317\u8fb2\u7522\u904b\u92b7\u80a1\u4efd\u6709\u9650\u516c\u53f8", "shape": "dot", "size": 10, "title": "\u81fa\u5317\u8fb2\u7522\u904b\u92b7\u80a1\u4efd\u6709\u9650\u516c\u53f8\nnodeid: 881.0\nlevel: 4034.0\nufwork: 0.0\ncountry: 1.0\nperson: 0.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\ncompanyid: 4550147.0\naddress: \u81fa\u5317\u5e02\u4e2d\u5c71\u5340\u6c11\u65cf\u6771\u8def336\u865f"}, {"color": "#97c2fc", "id": "\u5f35\u69ae\u5473", "label": "\u5f35\u69ae\u5473", "shape": "dot", "size": 10, "title": "\u5f35\u69ae\u5473\nnodeid: 1388.0\nlevel: 3041.0\nufwork: 0.0\nrank: \u524d\u96f2\u6797\u7e23\u9577\ncountry: 1.0\nperson: 1.0\nparty: \u570b\u6c11\u9ee8\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\nfamily: 1.0\nfamily_center: \u5f35\u69ae\u5473"}, {"color": "#97c2fc", "id": "\u6797\u555f\u6ec4", "label": "\u6797\u555f\u6ec4", "shape": "dot", "size": 10, "title": "\u6797\u555f\u6ec4\nnodeid: 1372.0\nlevel: 4019.0\nufwork: 0.0\nrank: \u5168\u570b\u6f01\u6703\u7e3d\u5e79\u4e8b\ncountry: 1.0\nperson: 1.0\nparty: \u570b\u6c11\u9ee8\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\ngroup: \u5f35\u69ae\u5473"}, {"color": "#97c2fc", "id": "\u6771\u6a4b\u71df\u9020\u5de5\u7a0b\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "\u6771\u6a4b\u71df\u9020\u5de5\u7a0b\u80a1\u4efd\u6709\u9650\u516c\u53f8", "shape": "dot", "size": 10, "title": "\u6771\u6a4b\u71df\u9020\u5de5\u7a0b\u80a1\u4efd\u6709\u9650\u516c\u53f8\nnodeid: 737.0\nlevel: 4052.0\nufwork: 0.0\ncountry: 1.0\nperson: 0.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\ncompanyid: 23568174.0\naddress: \u81fa\u4e2d\u5e02\u5357\u5c6f\u5340\u5927\u6b63\u885788\u865f3\u6a13\u4e4b1"}, {"color": "#97c2fc", "id": "\u73c5\u5821\u570b\u969b\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "\u73c5\u5821\u570b\u969b\u80a1\u4efd\u6709\u9650\u516c\u53f8", "shape": "dot", "size": 10, "title": "\u73c5\u5821\u570b\u969b\u80a1\u4efd\u6709\u9650\u516c\u53f8\nnodeid: 758.0\nlevel: 4052.0\nufwork: 0.0\ncountry: 1.0\nperson: 0.0\ngovernment: 0.0\ndead: 1.0\nchina_investor: 0.0\ncompanyid: 25091098.0\naddress: \u96f2\u6797\u7e23\u6597\u516d\u5e02\u592a\u5e73\u91cc\u57ce\u9802\u885747\u4e4b5\u865f1\u6a13"}, {"color": "#97c2fc", "id": "\u5b87\u8abc\u9910\u98f2\u4e8b\u696d\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "\u5b87\u8abc\u9910\u98f2\u4e8b\u696d\u80a1\u4efd\u6709\u9650\u516c\u53f8", "shape": "dot", "size": 10, "title": "\u5b87\u8abc\u9910\u98f2\u4e8b\u696d\u80a1\u4efd\u6709\u9650\u516c\u53f8\nnodeid: 709.0\nlevel: 4052.0\nufwork: 0.0\ncountry: 1.0\nperson: 0.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\ncompanyid: 24671773.0\naddress: \u81fa\u4e2d\u5e02\u5357\u5c6f\u5340\u5927\u6b63\u885788\u865f3\u6a13\u4e4b1"}, {"color": "#97c2fc", "id": "\u6cf0\u5b89\u5c71\u6cb3\u5883\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "\u6cf0\u5b89\u5c71\u6cb3\u5883\u80a1\u4efd\u6709\u9650\u516c\u53f8", "shape": "dot", "size": 10, "title": "\u6cf0\u5b89\u5c71\u6cb3\u5883\u80a1\u4efd\u6709\u9650\u516c\u53f8\nnodeid: 767.0\nlevel: 4052.0\nufwork: 0.0\ncountry: 1.0\nperson: 0.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\ncompanyid: 50832346.0\naddress: \u81fa\u4e2d\u5e02\u5357\u5c6f\u5340\u5927\u6b63\u885788\u865f3\u6a13\u4e4b1"}, {"color": "#97c2fc", "id": "\u5f35\u9394\u9e92", "label": "\u5f35\u9394\u9e92", "shape": "dot", "size": 10, "title": "\u5f35\u9394\u9e92\nnodeid: 1390.0\nlevel: 4059.0\nufwork: 0.0\nrank: \u53f0\u4e2d\u5e02\u653f\u5e9c\u53c3\u4e8b\ncountry: 1.0\nperson: 1.0\nparty: \u570b\u6c11\u9ee8\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\nfamily: 1.0\nfamily_center: \u5f35\u69ae\u5473\nfamily_relationship: \u5152\u5b50"}, {"color": "#97c2fc", "id": "\u4e2d\u570b\u570b\u6c11\u9ee8", "label": "\u4e2d\u570b\u570b\u6c11\u9ee8", "shape": "dot", "size": 10, "title": "\u4e2d\u570b\u570b\u6c11\u9ee8\nnodeid: 9026.0\nlevel: 4011.0\nufwork: 1.0\ncountry: 1.0\nperson: 0.0\ngovernment: 0.0\ndead: 0.0"}, {"color": "#97c2fc", "id": "\u5f35\u9e97\u5584", "label": "\u5f35\u9e97\u5584", "shape": "dot", "size": 10, "title": "\u5f35\u9e97\u5584\nnodeid: 1391.0\nlevel: 3041.0\nufwork: 0.0\nrank: \u96f2\u6797\u7e23\u9577\ncountry: 1.0\nperson: 1.0\nparty: \u570b\u6c11\u9ee8\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\nfamily: 1.0\nfamily_center: \u5f35\u69ae\u5473\nfamily_relationship: \u59b9\u59b9"}, {"color": "#97c2fc", "id": "\u9673\u6c38\u88d5", "label": "\u9673\u6c38\u88d5", "shape": "dot", "size": 10, "title": "\u9673\u6c38\u88d5\nnodeid: 810.0\nlevel: 4059.0\nufwork: 0.0\ncountry: 1.0\nperson: 1.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\nfamily: 1.0\nfamily_center: \u5f35\u69ae\u5473\nfamily_relationship: \u59b9\u5a7f"}, {"color": "#97c2fc", "id": "\u674e\u65e5\u8cb4", "label": "\u674e\u65e5\u8cb4", "shape": "dot", "size": 10, "title": "\u674e\u65e5\u8cb4\nnodeid: 1364.0\nlevel: 3042.0\nufwork: 0.0\nrank: \u524d\u96f2\u6797\u7e23\u8b70\u54e1\ncountry: 1.0\nperson: 1.0\nparty: \u570b\u6c11\u9ee8\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\nfamily: 1.0\nfamily_center: \u97d3\u570b\u745c\nfamily_relationship: \u5cb3\u7236"}, {"color": "#97c2fc", "id": "\u4e2d\u83ef\u6c11\u570b\u5168\u570b\u6f01\u6703", "label": "\u4e2d\u83ef\u6c11\u570b\u5168\u570b\u6f01\u6703", "shape": "dot", "size": 10, "title": "\u4e2d\u83ef\u6c11\u570b\u5168\u570b\u6f01\u6703\nnodeid: 1155.0\nlevel: 4011.0\nufwork: 1.0\ncountry: 1.0\nperson: 0.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\naddress: \u65b0\u5317\u5e02\u4e09\u91cd\u5340\u529b\u884c\u8def\u4e00\u6bb56\u865f"}, {"color": "#97c2fc", "id": "\u6d77\u5cfd\u5169\u5cb8\u8fb2\u696d\u4ea4\u6d41\u5354\u6703", "label": "\u6d77\u5cfd\u5169\u5cb8\u8fb2\u696d\u4ea4\u6d41\u5354\u6703", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\u8a31\u5b87\u7504", "label": "\u8a31\u5b87\u7504", "shape": "dot", "size": 10, "title": "\u8a31\u5b87\u7504\nrank: \u7acb\u6cd5\u59d4\u54e1\nparty: \u570b\u6c11\u9ee8\nfamily_center: \u6797\u555f\u6ec4\nfamily_relationship: \u59bb\u5b50"}, {"color": "#97c2fc", "id": "\u604f\u5ba2\u98f2\u98df\u6587\u5316\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "\u604f\u5ba2\u98f2\u98df\u6587\u5316\u80a1\u4efd\u6709\u9650\u516c\u53f8", "shape": "dot", "size": 10, "title": "\u604f\u5ba2\u98f2\u98df\u6587\u5316\u80a1\u4efd\u6709\u9650\u516c\u53f8\nnodeid: 630.0\nlevel: 4052.0\nufwork: 0.0\ncountry: 1.0\nperson: 0.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\ncompanyid: 54978053.0\naddress: \u65b0\u7af9\u7e23\u7af9\u5317\u5e02\u5341\u8208\u4e09\u8857121\u865f\u3001123\u865f\u53ca125\u865f"}, {"color": "#97c2fc", "id": "\u7950\u65b0\u74b0\u4fdd\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "\u7950\u65b0\u74b0\u4fdd\u80a1\u4efd\u6709\u9650\u516c\u53f8", "shape": "dot", "size": 10, "title": "\u7950\u65b0\u74b0\u4fdd\u80a1\u4efd\u6709\u9650\u516c\u53f8\nnodeid: 772.0\nlevel: 4052.0\nufwork: 0.0\ncountry: 1.0\nperson: 0.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\ncompanyid: 56807739.0\naddress: \u96f2\u6797\u7e23\u864e\u5c3e\u93ae\u6771\u4ec1\u91cc\u6c11\u65cf\u8def41\u865f1\u6a13"}, {"color": "#97c2fc", "id": "\u96f2\u66dc\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "\u96f2\u66dc\u80a1\u4efd\u6709\u9650\u516c\u53f8", "shape": "dot", "size": 10, "title": "\u96f2\u66dc\u80a1\u4efd\u6709\u9650\u516c\u53f8\nnodeid: 841.0\nlevel: 4052.0\nufwork: 0.0\ncountry: 1.0\nperson: 0.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\ncompanyid: 55876217.0\naddress: \u96f2\u6797\u7e23\u864e\u5c3e\u93ae\u897f\u5b89\u91cc\u897f\u5b89\u8def64\u865f3\u6a13"}, {"color": "#97c2fc", "id": "\u9ad8\u91ce\u5927\u98ef\u5e97\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "\u9ad8\u91ce\u5927\u98ef\u5e97\u80a1\u4efd\u6709\u9650\u516c\u53f8", "shape": "dot", "size": 10, "title": "\u9ad8\u91ce\u5927\u98ef\u5e97\u80a1\u4efd\u6709\u9650\u516c\u53f8\nnodeid: 780.0\nlevel: 4052.0\nufwork: 0.0\ncountry: 1.0\nperson: 0.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\ncompanyid: 29129201.0\naddress: \u81fa\u6771\u7e23\u5351\u5357\u9109\u6eab\u6cc9\u6751\u9f8d\u6cc9\u8def30\u4e4b2\u865f5\u6a13\u4e4b41"}, {"color": "#97c2fc", "id": "\u5433\u6e05\u7da0", "label": "\u5433\u6e05\u7da0", "shape": "dot", "size": 10, "title": "\u5433\u6e05\u7da0\nnodeid: 718.0\nlevel: 4059.0\nufwork: 0.0\ncountry: 1.0\nperson: 1.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0"}, {"color": "#97c2fc", "id": "\u8302\u9806\u6295\u8cc7\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "\u8302\u9806\u6295\u8cc7\u80a1\u4efd\u6709\u9650\u516c\u53f8", "shape": "dot", "size": 10, "title": "\u8302\u9806\u6295\u8cc7\u80a1\u4efd\u6709\u9650\u516c\u53f8\nnodeid: 760.0\nlevel: 4052.0\nufwork: 0.0\ncountry: 1.0\nperson: 0.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\ncompanyid: 70506447.0\naddress: \u81fa\u5317\u5e02\u5167\u6e56\u5340\u5167\u6e56\u8def1\u6bb5118\u865f4\u6a13"}, {"color": "#97c2fc", "id": "\u5143\u70ac\u79d1\u7814\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "\u5143\u70ac\u79d1\u7814\u80a1\u4efd\u6709\u9650\u516c\u53f8", "shape": "dot", "size": 10, "title": "\u5143\u70ac\u79d1\u7814\u80a1\u4efd\u6709\u9650\u516c\u53f8\nnodeid: 657.0\nlevel: 4052.0\nufwork: 0.0\ntype: \u79d1\u6280\ncountry: 1.0\nperson: 0.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\ncompanyid: 84167600.0\naddress: \u81fa\u5317\u5e02\u5167\u6e56\u5340\u5167\u6e56\u8def1\u6bb5118\u865f4\u6a13"}, {"color": "#97c2fc", "id": "\u9b4f\u826f\u5168", "label": "\u9b4f\u826f\u5168", "shape": "dot", "size": 10, "title": "\u9b4f\u826f\u5168\nnodeid: 903.0\nlevel: 4059.0\nufwork: 0.0\ncountry: 1.0\nperson: 1.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0"}, {"color": "#97c2fc", "id": "\u5468\u67cf\u541f", "label": "\u5468\u67cf\u541f", "shape": "dot", "size": 10, "title": "\u5468\u67cf\u541f\nnodeid: 12430.0\nufwork: 1.0\nrank: \u524d\u6843\u5712\u5e02\u89c0\u5149\u65c5\u904a\u5c40\u5c40\u9577\ntype: \u5ba3\u50b3\ncountry: 1.0\nperson: 1.0\npolitician: 1.0\ncname: \u96f2\u6797\u7e23\nparty: \u4e2d\u570b\u570b\u6c11\u9ee8\ngovernment: 0.0\ndead: 0.0\nfamily_center: \u5f35\u5609\u90e1\nfamily_relationship: \u4e08\u592b"}, {"color": "#97c2fc", "id": "\u4e2d\u570b\u570b\u6c11\u9ee8\u9769\u547d\u59d4\u54e1\u6703", "label": "\u4e2d\u570b\u570b\u6c11\u9ee8\u9769\u547d\u59d4\u54e1\u6703", "shape": "dot", "size": 10, "title": "\u4e2d\u570b\u570b\u6c11\u9ee8\u9769\u547d\u59d4\u54e1\u6703\nnodeid: 10275.0\nlevel: 451.0\nufwork: 0.0\norgtype: \u6c11\u4e3b\u9ee8\u6d3e\ncountry: 0.0\nperson: 0.0\ndead: 0.0"}, {"color": "#97c2fc", "id": "\u53f0\u4e2d\u5e02\u653f\u5e9c", "label": "\u53f0\u4e2d\u5e02\u653f\u5e9c", "shape": "dot", "size": 10, "title": "\u53f0\u4e2d\u5e02\u653f\u5e9c"}, {"color": "#97c2fc", "id": "\u570b\u5473\u5802\u751f\u6280\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "\u570b\u5473\u5802\u751f\u6280\u80a1\u4efd\u6709\u9650\u516c\u53f8", "shape": "dot", "size": 10, "title": "\u570b\u5473\u5802\u751f\u6280\u80a1\u4efd\u6709\u9650\u516c\u53f8\nnodeid: 792.0\nlevel: 4052.0\nufwork: 0.0\ncountry: 1.0\nperson: 0.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\ncompanyid: 52607366.0\naddress: \u81fa\u5317\u5e02\u5167\u6e56\u5340\u5167\u6e56\u8def1\u6bb5118\u865f4\u6a13"}, {"color": "#97c2fc", "id": "\u694a\u4fca\u6bc5", "label": "\u694a\u4fca\u6bc5", "shape": "dot", "size": 10, "title": "\u694a\u4fca\u6bc5\nnodeid: 855.0\nlevel: 4059.0\nufwork: 0.0\ncountry: 1.0\nperson: 1.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0"}, {"color": "#97c2fc", "id": "\u91d1\u4f86\u570b\u969b\u958b\u767c\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "\u91d1\u4f86\u570b\u969b\u958b\u767c\u80a1\u4efd\u6709\u9650\u516c\u53f8", "shape": "dot", "size": 10, "title": "\u91d1\u4f86\u570b\u969b\u958b\u767c\u80a1\u4efd\u6709\u9650\u516c\u53f8"}, {"color": "#97c2fc", "id": "\u5f35\u5bcc\u9806", "label": "\u5f35\u5bcc\u9806", "shape": "dot", "size": 10, "title": "\u5f35\u5bcc\u9806\nnodeid: 804.0\nlevel: 4059.0\nufwork: 0.0\ncountry: 1.0\nperson: 1.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\ngroup: \u5f35\u69ae\u5473\nfamily: 1.0\nfamily_center: \u5f35\u69ae\u5473\nfamily_relationship: \u5b6b\u5b50"}, {"color": "#97c2fc", "id": "\u5f35\u96c5\u840d", "label": "\u5f35\u96c5\u840d", "shape": "dot", "size": 10, "title": "\u5f35\u96c5\u840d\nnodeid: 805.0\nlevel: 4059.0\nufwork: 0.0\ncountry: 1.0\nperson: 1.0\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\ngroup: \u5f35\u69ae\u5473\nfamily_relationship: \u79d8\u66f8"}, {"color": "#97c2fc", "id": "\u532f\u76ca\u6295\u9867\u6709\u9650\u516c\u53f8", "label": "\u532f\u76ca\u6295\u9867\u6709\u9650\u516c\u53f8", "shape": "dot", "size": 10, "title": "\u532f\u76ca\u6295\u9867\u6709\u9650\u516c\u53f8"}, {"color": "#97c2fc", "id": "\u9ede\u775b\u77f3\u591a\u5a92\u9ad4\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "\u9ede\u775b\u77f3\u591a\u5a92\u9ad4\u80a1\u4efd\u6709\u9650\u516c\u53f8", "shape": "dot", "size": 10, "title": "\u9ede\u775b\u77f3\u591a\u5a92\u9ad4\u80a1\u4efd\u6709\u9650\u516c\u53f8"}, {"color": "#97c2fc", "id": "\u674e\u4f73\u82ac", "label": "\u674e\u4f73\u82ac", "shape": "dot", "size": 10, "title": "\u674e\u4f73\u82ac\nnodeid: 1367.0\nlevel: 3042.0\nufwork: 0.0\nrank: \u7acb\u6cd5\u9662\u9577\u97d3\u570b\u745c\u4e4b\u59bb\ncountry: 1.0\nperson: 1.0\nparty: \u570b\u6c11\u9ee8\ngovernment: 0.0\ndead: 0.0\nchina_investor: 0.0\nfamily: 1.0\nfamily_center: \u97d3\u570b\u745c\nfamily_relationship: \u59bb\u5b50"}, {"color": "#97c2fc", "id": "\u6843\u5712\u5e02\u653f\u5e9c", "label": "\u6843\u5712\u5e02\u653f\u5e9c", "shape": "dot", "size": 10, "title": "\u6843\u5712\u5e02\u653f\u5e9c"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "\u4e2d\u83ef\u6c11\u570b\u8fb2\u6703", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 12476.0\ntreecheck: 1.0\nlinktype: 4.0\nevent: \u53f0\u7063\u512a\u8cea\u8fb2\u7522\u54c1\u5de1\u8ff4\u5c55\neventyear: 2007.0\nposition: \u7e3d\u5e79\u4e8b\nquit: 0.0\nsourceid: 2007017175.0", "to": "\u5f35\u6c38\u6210", "width": 1}, {"arrows": "to", "from": "\u4e2d\u83ef\u6c11\u570b\u8fb2\u6703", "label": "", "title": "linkname: \u8cc7\u91d1\u5f80\u4f86\uff08\u9678\u8cc7\u3001\u5408\u8cc7\u3001\u5408\u5925\u3001\u4f75\u8cfc\uff09\nlinkid: 12482.0\ntreecheck: 1.0\nlinktype: 3.0\neventyear: 2023.0\nsourceid: 2023017177.0", "to": "\u5f35\u5609\u90e1", "width": 1}, {"arrows": "to", "from": "\u5f35\u6c38\u6210", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 654.0\ntreecheck: 0.0\nlinktype: 4.0\nposition: \u8463\u4e8b\nsourceid: 2022000345.0\nwebsite: https://www.twincn.com/item.aspx?no=89511883", "to": "\u6843\u8fb2\u7d9c\u5408\u8fb2\u7522\u54c1\u6279\u767c\u5e02\u5834\u80a1\u4efd\u6709\u9650\u516c\u53f8", "width": 1}, {"arrows": "to", "from": "\u5f35\u6c38\u6210", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 655.0\ntreecheck: 1.0\nlinktype: 4.0\nposition: \u8463\u4e8b\nsourceid: 2022000345.0\nwebsite: https://www.twincn.com/item.aspx?no=04550147", "to": "\u81fa\u5317\u8fb2\u7522\u904b\u92b7\u80a1\u4efd\u6709\u9650\u516c\u53f8", "width": 1}, {"arrows": "to", "from": "\u5f35\u6c38\u6210", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 672.0\ntreecheck: 1.0\nlinktype: 4.0\nsourceid: 2017000498.0\nlinkgroupname: \u5f35\u69ae\u5473\ninfo1: \u5f35\u6c38\u6210\u70ba\u5f35\u69ae\u5473\u4e4b\u59b9\u5f35\u9e97\u5584\u4e4b\u592b", "to": "\u5f35\u69ae\u5473", "width": 1}, {"arrows": "to", "from": "\u5f35\u69ae\u5473", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 674.0\ntreecheck: 1.0\nlinktype: 4.0\nsourceid: 2017000498.0\nlinkgroupname: \u5f35\u69ae\u5473", "to": "\u6797\u555f\u6ec4", "width": 1}, {"arrows": "to", "from": "\u5f35\u69ae\u5473", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 689.0\ntreecheck: 0.0\nlinktype: 4.0\nposition: \u8463\u76e3\u4e8b\nquit: 1.0\nsourceid: 2022000349.0\nwebsite: https://www.twincn.com/item.aspx?no=23568174", "to": "\u6771\u6a4b\u71df\u9020\u5de5\u7a0b\u80a1\u4efd\u6709\u9650\u516c\u53f8", "width": 1}, {"arrows": "to", "from": "\u5f35\u69ae\u5473", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 690.0\ntreecheck: 0.0\nlinktype: 4.0\nposition: \u8463\u76e3\u4e8b\nquit: 1.0\nsourceid: 2022000350.0\nwebsite: https://www.twincn.com/item.aspx?no=25091098", "to": "\u73c5\u5821\u570b\u969b\u80a1\u4efd\u6709\u9650\u516c\u53f8", "width": 1}, {"arrows": "to", "from": "\u5f35\u69ae\u5473", "label": "", "title": "linkname: \u516c\u53f8\u884c\u865f\u767b\u8a18\u65bc\u540c\u4e00\u5730\u9ede\uff0f\u4eba\u54e1\u91cd\u758a\uff0f\u89aa\u621a\nlinkid: 691.0\ntreecheck: 0.0\nlinktype: 8.0\nsourceid: 2022000351.0\nwebsite: https://www.twincn.com/item.aspx?no=24671773", "to": "\u5b87\u8abc\u9910\u98f2\u4e8b\u696d\u80a1\u4efd\u6709\u9650\u516c\u53f8", "width": 1}, {"arrows": "to", "from": "\u5f35\u69ae\u5473", "label": "", "title": "linkname: \u516c\u53f8\u884c\u865f\u767b\u8a18\u65bc\u540c\u4e00\u5730\u9ede\uff0f\u4eba\u54e1\u91cd\u758a\uff0f\u89aa\u621a\nlinkid: 692.0\ntreecheck: 0.0\nlinktype: 8.0\nsourceid: 2022000352.0\nwebsite: https://www.twincn.com/item.aspx?no=50832346", "to": "\u6cf0\u5b89\u5c71\u6cb3\u5883\u80a1\u4efd\u6709\u9650\u516c\u53f8", "width": 1}, {"arrows": "to", "from": "\u5f35\u69ae\u5473", "label": "", "title": "linkname: \u516c\u53f8\u884c\u865f\u767b\u8a18\u65bc\u540c\u4e00\u5730\u9ede\uff0f\u4eba\u54e1\u91cd\u758a\uff0f\u89aa\u621a\nlinkid: 693.0\ntreecheck: 1.0\nlinktype: 8.0", "to": "\u5f35\u5609\u90e1", "width": 1}, {"arrows": "to", "from": "\u5f35\u69ae\u5473", "label": "", "title": "linkname: \u516c\u53f8\u884c\u865f\u767b\u8a18\u65bc\u540c\u4e00\u5730\u9ede\uff0f\u4eba\u54e1\u91cd\u758a\uff0f\u89aa\u621a\nlinkid: 710.0\ntreecheck: 0.0\nlinktype: 8.0\ninfo1: \u5f35\u9394\u9e92\u70ba\u5f35\u69ae\u5473\u4e4b\u5b50", "to": "\u5f35\u9394\u9e92", "width": 1}, {"arrows": "to", "from": "\u5f35\u69ae\u5473", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 715.0\ntreecheck: 1.0\nlinktype: 4.0", "to": "\u4e2d\u570b\u570b\u6c11\u9ee8", "width": 1}, {"arrows": "to", "from": "\u5f35\u69ae\u5473", "label": "", "title": "linkname: \u516c\u53f8\u884c\u865f\u767b\u8a18\u65bc\u540c\u4e00\u5730\u9ede\uff0f\u4eba\u54e1\u91cd\u758a\uff0f\u89aa\u621a\nlinkid: 717.0\ntreecheck: 1.0\nlinktype: 8.0\ninfo1: \u5f35\u9e97\u5584\u70ba\u5f35\u69ae\u5473\u4e4b\u59b9", "to": "\u5f35\u9e97\u5584", "width": 1}, {"arrows": "to", "from": "\u5f35\u69ae\u5473", "label": "", "title": "linkname: \u516c\u53f8\u884c\u865f\u767b\u8a18\u65bc\u540c\u4e00\u5730\u9ede\uff0f\u4eba\u54e1\u91cd\u758a\uff0f\u89aa\u621a\nlinkid: 720.0\ntreecheck: 0.0\nlinktype: 8.0\ninfo1: \u9673\u6c38\u88d5\u662f\u5f35\u69ae\u5473\u4e4b\u59b9\u5f35\u9e97\u5a1f\u7684\u4e08\u592b", "to": "\u9673\u6c38\u88d5", "width": 1}, {"arrows": "to", "from": "\u5f35\u69ae\u5473", "label": "", "title": "linkname: \u5408\u8fa6\u6d3b\u52d5\uff0f\u7de0\u7d50\u806f\u76df\uff0f\u5f80\u4f86\u5bc6\u5207\uff0f\u7c3d\u7d04\nlinkid: 798.0\ntreecheck: 1.0\nlinktype: 6.0\nsourceid: 2019000260.0\nwebsite: https://www.cw.com.tw/article/article.action?id=5095430\ninfo1: \u97d3\u570b\u745c\u8207\u5f35\u69ae\u5473\u7684\u7d50\u7de3\uff0c\u548c\u5cb3\u5bb6\u812b\u4e0d\u4e86\u95dc\u4fc2\u3002\u97d3\u570b\u745c\u7684\u5cb3\u7236\u674e\u65e5\u8cb4\u66fe\u662f\u96f2\u6797\u7e23\u8b70\u54e1\uff0c\u548c\u7576\u6642\u540c\u5728\u8b70\u6703\u7684\u5f35\u69ae\u5473\u3001\u694a\u570b\u5bec\u7b49\u4e09\u4eba\u662f\u62dc\u628a\u5144\u5f1f\u3002", "to": "\u674e\u65e5\u8cb4", "width": 1}, {"arrows": "to", "from": "\u4e2d\u83ef\u6c11\u570b\u5168\u570b\u6f01\u6703", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 673.0\ntreecheck: 0.0\nlinktype: 4.0\nposition: \u7e3d\u5e79\u4e8b\nsourceid: 2018000248.0\nlinkgroupname: \u5f35\u69ae\u5473\nwebsite: https://www.npf.org.tw/17/17998\ninfo1: \u5168\u570b\u6f01\u6703\u7e3d\u5e79\u4e8b", "to": "\u6797\u555f\u6ec4", "width": 1}, {"arrows": "to", "from": "\u4e2d\u83ef\u6c11\u570b\u5168\u570b\u6f01\u6703", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 676.0\ntreecheck: 0.0\nlinktype: 4.0\nevent: \u5169\u5cb8\u9109\u6751\u5ea7\u8ac7\u6d3b\u52d5\neventterm: 2.0\neventyear: 2012.0\nsourceid: 2012000283.0\nlinkgroupname: \u5f35\u69ae\u5473\nwebsite: http://news.dwnews.com/global/big5/news/2010-09-19/56470403.html", "to": "\u6d77\u5cfd\u5169\u5cb8\u8fb2\u696d\u4ea4\u6d41\u5354\u6703", "width": 1}, {"arrows": "to", "from": "\u6797\u555f\u6ec4", "label": "", "title": "linkname: \u5408\u8fa6\u6d3b\u52d5\uff0f\u7de0\u7d50\u806f\u76df\uff0f\u5f80\u4f86\u5bc6\u5207\uff0f\u7c3d\u7d04\nlinkgroupname: \u5f35\u69ae\u5473\ninfo1: \u8a31\u5b87\u7504\u70ba\u6797\u555f\u6ec4\u4e4b\u59bb", "to": "\u8a31\u5b87\u7504", "width": 1}, {"arrows": "to", "from": "\u6771\u6a4b\u71df\u9020\u5de5\u7a0b\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 697.0\ntreecheck: 0.0\nlinktype: 4.0\nposition: \u8463\u76e3\u4e8b\nquit: 1.0\nsourceid: 2022000349.0\nwebsite: https://www.twincn.com/item.aspx?no=23568174", "to": "\u5f35\u5609\u90e1", "width": 1}, {"arrows": "to", "from": "\u5f35\u5609\u90e1", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 694.0\ntreecheck: 0.0\nlinktype: 4.0\nposition: \u8463\u4e8b\u9577\nsourceid: 2022000353.0\nwebsite: https://www.twincn.com/item.aspx?no=54978053", "to": "\u604f\u5ba2\u98f2\u98df\u6587\u5316\u80a1\u4efd\u6709\u9650\u516c\u53f8", "width": 1}, {"arrows": "to", "from": "\u5f35\u5609\u90e1", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 695.0\ntreecheck: 0.0\nlinktype: 4.0\nposition: \u8463\u76e3\u4e8b\nquit: 1.0\nsourceid: 2022000354.0\nwebsite: https://www.twincn.com/item.aspx?no=56807739", "to": "\u7950\u65b0\u74b0\u4fdd\u80a1\u4efd\u6709\u9650\u516c\u53f8", "width": 1}, {"arrows": "to", "from": "\u5f35\u5609\u90e1", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 696.0\ntreecheck: 0.0\nlinktype: 4.0\nposition: \u8463\u76e3\u4e8b\nquit: 1.0\nsourceid: 2022000355.0\nwebsite: https://www.twincn.com/item.aspx?no=55876217", "to": "\u96f2\u66dc\u80a1\u4efd\u6709\u9650\u516c\u53f8", "width": 1}, {"arrows": "to", "from": "\u5f35\u5609\u90e1", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 698.0\ntreecheck: 0.0\nlinktype: 4.0\nposition: \u8463\u4e8b\nsourceid: 2022000357.0\nwebsite: https://www.twincn.com/item.aspx?no=29129201", "to": "\u9ad8\u91ce\u5927\u98ef\u5e97\u80a1\u4efd\u6709\u9650\u516c\u53f8", "width": 1}, {"arrows": "to", "from": "\u5f35\u5609\u90e1", "label": "", "title": "linkname: \u516c\u53f8\u884c\u865f\u767b\u8a18\u65bc\u540c\u4e00\u5730\u9ede\uff0f\u4eba\u54e1\u91cd\u758a\uff0f\u89aa\u621a\nlinkid: 700.0\ntreecheck: 0.0\nlinktype: 8.0\ninfo1: \u9ad8\u91ce\u5927\u98ef\u5e97", "to": "\u5433\u6e05\u7da0", "width": 1}, {"arrows": "to", "from": "\u5f35\u5609\u90e1", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 712.0\ntreecheck: 0.0\nlinktype: 4.0\nposition: \u80a1\u6771\nsourceid: 2022000378.0\nwebsite: https://m.moneydj.com/f1a.aspx?a=bd6e8fa5-7a0b-4a62-b156-521e29b6adeb", "to": "\u8302\u9806\u6295\u8cc7\u80a1\u4efd\u6709\u9650\u516c\u53f8", "width": 1}, {"arrows": "to", "from": "\u5f35\u5609\u90e1", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 713.0\ntreecheck: 0.0\nlinktype: 4.0\nposition: \u8463\u4e8b\nsourceid: 2022000378.0\nwebsite: https://m.moneydj.com/f1a.aspx?a=bd6e8fa5-7a0b-4a62-b156-521e29b6adeb", "to": "\u5143\u70ac\u79d1\u7814\u80a1\u4efd\u6709\u9650\u516c\u53f8", "width": 1}, {"arrows": "to", "from": "\u5f35\u5609\u90e1", "label": "", "title": "linkname: \u516c\u53f8\u884c\u865f\u767b\u8a18\u65bc\u540c\u4e00\u5730\u9ede\uff0f\u4eba\u54e1\u91cd\u758a\uff0f\u89aa\u621a\nlinkid: 722.0\ntreecheck: 0.0\nlinktype: 8.0\nposition: \u8463\u4e8b\u8b8a\u66f4", "to": "\u9b4f\u826f\u5168", "width": 1}, {"arrows": "to", "from": "\u5f35\u5609\u90e1", "label": "", "title": "linkname: \u5408\u8fa6\u6d3b\u52d5\uff0f\u7de0\u7d50\u806f\u76df\uff0f\u5f80\u4f86\u5bc6\u5207\uff0f\u7c3d\u7d04\nlinkid: 12487.0\ntreecheck: 1.0\nlinktype: 6.0\neventyear: 2023.0\nsourceid: 2023017180.0\ninfo1: \u592b\u59bb", "to": "\u5468\u67cf\u541f", "width": 1}, {"arrows": "to", "from": "\u5f35\u5609\u90e1", "label": "", "title": "linkname: \u53c3\u8207\u6216\u5408\u8fa6\u4e3b\u8981\u7d71\u6230\u6d3b\u52d5\uff08\u6d77\u5cfd\u8ad6\u58c7\u7b49\uff09\nlinkid: 12490.0\ntreecheck: 1.0\nlinktype: 5.0\nevent: \u6d77\u5cfd\u9752\u5e74\u9ad8\u5cf0\u6703\neventterm: 3.0\neventyear: 2014.0\nsourceid: 2014017181.0", "to": "\u4e2d\u570b\u570b\u6c11\u9ee8\u9769\u547d\u59d4\u54e1\u6703", "width": 1}, {"arrows": "to", "from": "\u5f35\u5609\u90e1", "label": "", "title": "linkid: 101160.0\ntreecheck: 1.0\nposition: \u9ee8\u54e1", "to": "\u4e2d\u570b\u570b\u6c11\u9ee8", "width": 1}, {"arrows": "to", "from": "\u5f35\u9394\u9e92", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nposition: \u53c3\u8b70\nwebsite: https://www.cna.com.tw/news/aloc/202404270152.aspx", "to": "\u53f0\u4e2d\u5e02\u653f\u5e9c", "width": 1}, {"arrows": "to", "from": "\u5f35\u9394\u9e92", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 711.0\ntreecheck: 1.0\nlinktype: 4.0\nposition: \u8ca0\u8cac\u4eba\nquit: 1.0\nsourceid: 2022000377.0\nwebsite: https://www.twincn.com/item.aspx?no=52607366", "to": "\u570b\u5473\u5802\u751f\u6280\u80a1\u4efd\u6709\u9650\u516c\u53f8", "width": 1}, {"arrows": "to", "from": "\u570b\u5473\u5802\u751f\u6280\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 719.0\ntreecheck: 0.0\nlinktype: 4.0\nposition: \u524d\u4efb\u8463\u4e8b\u9577\nsourceid: 2022000377.0\nwebsite: https://www.twincn.com/item.aspx?no=52607366", "to": "\u694a\u4fca\u6bc5", "width": 1}, {"arrows": "to", "from": "\u570b\u5473\u5802\u751f\u6280\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 721.0\ntreecheck: 0.0\nlinktype: 4.0\nsourceid: 2022000377.0\nwebsite: https://www.twincn.com/item.aspx?no=52607366", "to": "\u9673\u6c38\u88d5", "width": 1}, {"arrows": "to", "from": "\u8302\u9806\u6295\u8cc7\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 723.0\ntreecheck: 0.0\nlinktype: 4.0\nposition: \u6cd5\u4eba\u4ee3\u8868\nsourceid: 2016000380.0\nwebsite: https://news.cnyes.com/news/id/3561423", "to": "\u9b4f\u826f\u5168", "width": 1}, {"arrows": "to", "from": "\u5143\u70ac\u79d1\u7814\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nposition: \u5b50\u516c\u53f8\nwebsite: https://www.twincn.com/item.aspx?no=54774564", "to": "\u91d1\u4f86\u570b\u969b\u958b\u767c\u80a1\u4efd\u6709\u9650\u516c\u53f8", "width": 1}, {"arrows": "to", "from": "\u5143\u70ac\u79d1\u7814\u80a1\u4efd\u6709\u9650\u516c\u53f8", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 724.0\ntreecheck: 0.0\nlinktype: 4.0\nsourceid: 2022000381.0\nwebsite: https://news.cnyes.com/news/id/3561423", "to": "\u9b4f\u826f\u5168", "width": 1}, {"arrows": "to", "from": "\u5f35\u9e97\u5584", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 714.0\ntreecheck: 0.0\nlinktype: 4.0\nposition: \u5718\u968a\u6210\u54e1", "to": "\u694a\u4fca\u6bc5", "width": 1}, {"arrows": "to", "from": "\u5f35\u9e97\u5584", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 716.0\ntreecheck: 1.0\nlinktype: 4.0\nsourceid: 2016000056.0", "to": "\u4e2d\u570b\u570b\u6c11\u9ee8", "width": 1}, {"arrows": "to", "from": "\u5f35\u9e97\u5584", "label": "", "title": "linkname: \u516c\u53f8\u884c\u865f\u767b\u8a18\u65bc\u540c\u4e00\u5730\u9ede\uff0f\u4eba\u54e1\u91cd\u758a\uff0f\u89aa\u621a\nlinkid: 730.0\ntreecheck: 0.0\nlinktype: 8.0", "to": "\u5f35\u5bcc\u9806", "width": 1}, {"arrows": "to", "from": "\u5f35\u9e97\u5584", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 732.0\ntreecheck: 0.0\nlinktype: 4.0", "to": "\u5f35\u96c5\u840d", "width": 1}, {"arrows": "to", "from": "\u694a\u4fca\u6bc5", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nposition: \u8ca0\u8cac\u4eba\nwebsite: https://www.twincn.com/item.aspx?no=53114657#pagej1", "to": "\u532f\u76ca\u6295\u9867\u6709\u9650\u516c\u53f8", "width": 1}, {"arrows": "to", "from": "\u694a\u4fca\u6bc5", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nposition: \u8ca0\u8cac\u4eba\nwebsite: https://www.twincn.com/item.aspx?no=53114657#pagej1", "to": "\u9ede\u775b\u77f3\u591a\u5a92\u9ad4\u80a1\u4efd\u6709\u9650\u516c\u53f8", "width": 1}, {"arrows": "to", "from": "\u4e2d\u570b\u570b\u6c11\u9ee8", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nlinkid: 13494.0\nlinktype: 4.0\nposition: \u65b0\u5a92\u9ad4\u90e8\u4e3b\u4efb\nquit: 1.0\nsourceid: 2016017182.0", "to": "\u5468\u67cf\u541f", "width": 1}, {"arrows": "to", "from": "\u674e\u4f73\u82ac", "label": "", "title": "linkname: \u516c\u53f8\u884c\u865f\u767b\u8a18\u65bc\u540c\u4e00\u5730\u9ede\uff0f\u4eba\u54e1\u91cd\u758a\uff0f\u89aa\u621a\nlinkid: 797.0\ntreecheck: 1.0\nlinktype: 8.0\ninfo1: \u7236\u5973", "to": "\u674e\u65e5\u8cb4", "width": 1}, {"arrows": "to", "from": "\u5468\u67cf\u541f", "label": "", "title": "linkname: \u53c3\u8207\u5718\u9ad4\uff0f\u64d4\u4efb\u8077\u52d9\nwebsite: https://www.mirrormedia.mg/story/20250325edi059\ninfo1: \u66fe\u4efb\u89c0\u5149\u65c5\u904a\u5c40\u5c40\u9577", "to": "\u6843\u5712\u5e02\u653f\u5e9c", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"edges": {"arrows": {"to": {"enabled": true}}, "font": {"size": 0}}, "nodes": {"shape": "dot", "size": 10}, "physics": {"barnesHut": {"gravitationalConstant": -30000}}, "interaction": {"hover": true, "selectConnectedEdges": false, "tooltipDelay": 200}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <script type="text/javascript">
+    var popup = null;
+    
+    // 創建固定的 popup 元素
+    function createPopup(content, x, y) {
+        removePopup();
+        popup = document.createElement('div');
+        popup.style.position = 'absolute';
+        popup.style.left = x + 'px';
+        popup.style.top = y + 'px';
+        popup.style.background = 'white';
+        popup.style.border = '1px solid #ccc';
+        popup.style.borderRadius = '5px';
+        popup.style.padding = '10px';
+        popup.style.maxWidth = '300px';
+        popup.style.zIndex = '1000';
+        popup.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+        popup.style.fontSize = '12px';
+        popup.style.userSelect = 'text';
+        popup.style.cursor = 'text';
+        
+        // 添加關閉按鈕
+        var closeBtn = document.createElement('span');
+        closeBtn.innerHTML = '×';
+        closeBtn.style.float = 'right';
+        closeBtn.style.cursor = 'pointer';
+        closeBtn.style.fontSize = '16px';
+        closeBtn.style.fontWeight = 'bold';
+        closeBtn.onclick = removePopup;
+        
+        var contentDiv = document.createElement('div');
+        contentDiv.innerHTML = content.replace(/\n/g, '<br>');
+        contentDiv.style.marginTop = '5px';
+        
+        popup.appendChild(closeBtn);
+        popup.appendChild(contentDiv);
+        document.body.appendChild(popup);
+    }
+    
+    function removePopup() {
+        if (popup) {
+            document.body.removeChild(popup);
+            popup = null;
+        }
+    }
+    
+    // 點擊網絡外部區域時關閉 popup
+    document.addEventListener('click', function(event) {
+        if (popup && !popup.contains(event.target)) {
+            var networkContainer = document.querySelector('#mynetworkid');
+            if (!networkContainer.contains(event.target)) {
+                removePopup();
+            }
+        }
+    });
+    
+    // 等待網絡載入完成後綁定事件
+    setTimeout(function() {
+        var network = window.network;
+        if (network) {
+            network.on("click", function(params) {
+                var x = params.pointer.DOM.x;
+                var y = params.pointer.DOM.y;
+                
+                if (params.nodes.length > 0) {
+                    // 點擊節點
+                    var nodeId = params.nodes[0];
+                    var nodeData = network.body.data.nodes.get(nodeId);
+                    if (nodeData && nodeData.title) {
+                        createPopup(nodeData.title, x + 10, y + 10);
+                    }
+                } else if (params.edges.length > 0) {
+                    // 點擊邊
+                    var edgeId = params.edges[0];
+                    var edgeData = network.body.data.edges.get(edgeId);
+                    if (edgeData && edgeData.title) {
+                        createPopup(edgeData.title, x + 10, y + 10);
+                    }
+                } else {
+                    // 點擊空白區域
+                    removePopup();
+                }
+            });
+        }
+    }, 1000);
+    </script>
+    
+</body>
+</html>
